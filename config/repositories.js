@@ -1,27 +1,30 @@
-{
-  "backend": {
-    "repositories": [
+// config/repositories.js
+
+export default {
+  backend: {
+    repositories: [
       "mi-policy-service",
       "mi-notification-service",
       "mi-payment-service",
       "pr-notification-test"
     ],
-    "leads": [
+    leads: [
       "prakhar.kumar@company.com",
       "sandhya@company.com",
       "prakharkumarindiranagar.kvg@gmail.com"
     ],
-    "teamsWebhook": "BACKEND_WEBHOOK"
+    teamsWebhook: "BACKEND_WEBHOOK"
   },
-  "frontend": {
-    "repositories": [
+
+  frontend: {
+    repositories: [
       "insurance-ui",
       "admin-ui"
     ],
-    "leads": [
+    leads: [
       "frontendlead@company.com",
       "prakharkumarindiranagar.kvg@gmail.com"
     ],
-    "teamsWebhook": "FRONTEND_WEBHOOK"
+    teamsWebhook: "FRONTEND_WEBHOOK"
   }
-}
+};
