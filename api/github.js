@@ -1,18 +1,59 @@
 export default async function handler(req, res) {
 
-    const body = req.body;
+    if (req.method !== "POST") {
+        return res.status(405).json({
+            success: false,
+            message: "Method Not Allowed"
+        });
+    }
 
-    const response = {
-        action: body.action,
-        repository: body.repository?.name,
-        title: body.pull_request?.title,
-        author: body.pull_request?.user?.login,
-        sourceBranch: body.pull_request?.head?.ref,
-        targetBranch: body.pull_request?.base?.ref,
-        url: body.pull_request?.html_url
+    const event = req.body;
+
+    // Ignore ping event
+    if (event.zen) {
+        return res.status(200).json({
+            success: true,
+            message: "Ping received"
+        });
+    }
+
+    // Ignore everything except newly opened PRs
+    if (event.action !== "opened") {
+        return res.status(200).json({
+            success: true,
+            message: `Ignoring PR action : ${event.action}`
+        });
+    }
+
+    const pr = {
+
+        repository: event.repository.name,
+
+        repositoryUrl: event.repository.html_url,
+
+        title: event.pull_request.title,
+
+        description: event.pull_request.body,
+
+        author: event.pull_request.user.login,
+
+        sourceBranch: event.pull_request.head.ref,
+
+        targetBranch: event.pull_request.base.ref,
+
+        prUrl: event.pull_request.html_url,
+
+        number: event.pull_request.number,
+
+        draft: event.pull_request.draft
     };
 
-    console.log(response);
+    console.log("==============================");
+    console.log("NEW PULL REQUEST");
+    console.log("==============================");
 
-    return res.status(200).json(response);
+    console.log(pr);
+
+    return res.status(200).json(pr);
+
 }
