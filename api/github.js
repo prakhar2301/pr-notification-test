@@ -1,19 +1,18 @@
 export default async function handler(req, res) {
 
-    console.log("========== NEW REQUEST ==========");
+    const body = req.body;
 
-    console.log("Method:");
-    console.log(req.method);
+    const response = {
+        action: body.action,
+        repository: body.repository?.name,
+        title: body.pull_request?.title,
+        author: body.pull_request?.user?.login,
+        sourceBranch: body.pull_request?.head?.ref,
+        targetBranch: body.pull_request?.base?.ref,
+        url: body.pull_request?.html_url
+    };
 
-    console.log("Headers:");
-    console.log(req.headers);
+    console.log(response);
 
-    console.log("Body:");
-    console.log(JSON.stringify(req.body, null, 2));
-
-    return res.status(200).json({
-        success: true,
-        message: "Webhook received successfully"
-    });
-
+    return res.status(200).json(response);
 }
