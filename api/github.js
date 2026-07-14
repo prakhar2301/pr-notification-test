@@ -1,59 +1,50 @@
+import { resolveRepository } from "../utils/repositoryResolver.js";
+
 export default async function handler(req, res) {
 
     if (req.method !== "POST") {
-        return res.status(405).json({
-            success: false,
-            message: "Method Not Allowed"
-        });
+        return res.status(405).end();
     }
 
     const event = req.body;
 
-    // Ignore ping event
-    if (event.zen) {
-        return res.status(200).json({
-            success: true,
-            message: "Ping received"
-        });
-    }
-
-    // Ignore everything except newly opened PRs
     if (event.action !== "opened") {
         return res.status(200).json({
-            success: true,
-            message: `Ignoring PR action : ${event.action}`
+            message: "Ignored"
         });
     }
 
-    const pr = {
+    const repositoryName = event.repository.name;
 
-        repository: event.repository.name,
+    const config = resolveRepository(repositoryName);
 
-        repositoryUrl: event.repository.html_url,
+    if (!config) {
+
+        return res.status(404).json({
+            message: "Repository not configured",
+            repository: repositoryName
+        });
+
+    }
+
+    return res.status(200).json({
+
+        repository: repositoryName,
+
+        type: config.type,
+
+        leads: config.leads,
+
+        webhook: config.webhookKey,
 
         title: event.pull_request.title,
 
-        description: event.pull_request.body,
-
         author: event.pull_request.user.login,
 
-        sourceBranch: event.pull_request.head.ref,
+        source: event.pull_request.head.ref,
 
-        targetBranch: event.pull_request.base.ref,
+        target: event.pull_request.base.ref
 
-        prUrl: event.pull_request.html_url,
-
-        number: event.pull_request.number,
-
-        draft: event.pull_request.draft
-    };
-
-    console.log("==============================");
-    console.log("NEW PULL REQUEST");
-    console.log("==============================");
-
-    console.log(pr);
-
-    return res.status(200).json(pr);
+    });
 
 }
