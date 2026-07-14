@@ -1,0 +1,84 @@
+export async function sendTeamsNotification(pr) {
+
+    const card = {
+        type: "message",
+        attachments: [
+            {
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    type: "AdaptiveCard",
+                    version: "1.5",
+
+                    body: [
+
+                        {
+                            type: "TextBlock",
+                            text: "🚀 New Pull Request",
+                            size: "Large",
+                            weight: "Bolder"
+                        },
+
+                        {
+                            type: "FactSet",
+                            facts: [
+
+                                {
+                                    title: "Repository",
+                                    value: pr.repository
+                                },
+
+                                {
+                                    title: "Author",
+                                    value: pr.author
+                                },
+
+                                {
+                                    title: "Title",
+                                    value: pr.title
+                                },
+
+                                {
+                                    title: "Source",
+                                    value: pr.source
+                                },
+
+                                {
+                                    title: "Target",
+                                    value: pr.target
+                                }
+
+                            ]
+                        }
+
+                    ],
+
+                    actions: [
+
+                        {
+                            type: "Action.OpenUrl",
+                            title: "Open Pull Request",
+                            url: pr.url
+                        }
+
+                    ]
+                }
+            }
+        ]
+    };
+
+    const response = await fetch(process.env.TEST_TEAMS_WEBHOOK, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(card)
+
+    });
+
+    console.log(await response.text());
+
+}
