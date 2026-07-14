@@ -1,4 +1,4 @@
-import repositories from "../config/repositories.json" assert { type: "json" };
+import repositories from "../config/repositories.js";
 
 export function resolveRepository(repositoryName) {
 
