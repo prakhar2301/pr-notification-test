@@ -12,9 +12,10 @@ export default async function handler(req, res) {
 
     const event = req.body;
 
-    if (event.action !== "opened") {
+    // Handle only the PR events we care about
+    if (!["opened", "closed"].includes(event.action)) {
         return res.status(200).json({
-            message: "Ignored"
+            message: `Ignoring action: ${event.action}`
         });
     }
 
@@ -31,33 +32,37 @@ export default async function handler(req, res) {
 
     const prDetails = {
 
-    repository: repositoryName,
+        repository: repositoryName,
 
-    type: config.type,
+        type: config.type,
 
-    leads: config.leads,
+        leads: config.leads,
 
-    title: event.pull_request.title,
+        number: event.pull_request.number,
 
-    description: event.pull_request.body || "No description provided.",
+        title: event.pull_request.title,
 
-    author: event.pull_request.user.login,
+        description: event.pull_request.body || "No description provided.",
 
-    source: event.pull_request.head.ref,
+        author: event.pull_request.user.login,
 
-    target: event.pull_request.base.ref,
+        source: event.pull_request.head.ref,
 
-    url: event.pull_request.html_url,
+        target: event.pull_request.base.ref,
 
-    number: event.pull_request.number,
+        url: event.pull_request.html_url,
 
-    createdAt: `${timeAgo(event.pull_request.created_at)} (${new Date(event.pull_request.created_at).toLocaleString("en-IN", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "Asia/Kolkata"
-})})`
+        action: event.action,
 
-};
+        merged: event.pull_request.merged,
+
+        createdAt: `${timeAgo(event.pull_request.created_at)} (${new Date(event.pull_request.created_at).toLocaleString("en-IN", {
+            dateStyle: "medium",
+            timeStyle: "short",
+            timeZone: "Asia/Kolkata"
+        })})`
+
+    };
 
     try {
 
@@ -81,7 +86,7 @@ export default async function handler(req, res) {
 
         success: true,
 
-        message: "Teams notification sent successfully",
+        message: `PR ${event.action} notification sent successfully`,
 
         pullRequest: prDetails
 
