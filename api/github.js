@@ -30,25 +30,32 @@ export default async function handler(req, res) {
 
     const prDetails = {
 
-        repository: repositoryName,
+    repository: repositoryName,
 
-        type: config.type,
+    type: config.type,
 
-        leads: config.leads,
+    leads: config.leads,
 
-        title: event.pull_request.title,
+    title: event.pull_request.title,
 
-        author: event.pull_request.user.login,
+    description: event.pull_request.body || "No description provided.",
 
-        source: event.pull_request.head.ref,
+    author: event.pull_request.user.login,
 
-        target: event.pull_request.base.ref,
+    source: event.pull_request.head.ref,
 
-        url: event.pull_request.html_url,
+    target: event.pull_request.base.ref,
 
-        number: event.pull_request.number
+    url: event.pull_request.html_url,
 
-    };
+    number: event.pull_request.number,
+
+    createdAt: new Date(event.pull_request.created_at).toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short"
+    })
+
+};
 
     try {
 
