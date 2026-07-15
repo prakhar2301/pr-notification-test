@@ -51,7 +51,11 @@ export default async function handler(req, res) {
 
     number: event.pull_request.number,
 
-    createdAt: timeAgo(event.pull_request.created_at)
+    createdAt: `${timeAgo(event.pull_request.created_at)} (${new Date(event.pull_request.created_at).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Kolkata"
+})})`
 
 };
 
