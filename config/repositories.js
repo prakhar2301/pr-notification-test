@@ -9,8 +9,7 @@ export default {
       "pr-notification-test"
     ],
     leads: [
-      "prakhar.kumar@company.com",
-      "sandhya@company.com",
+      "prakhar@nagarro.com",
       "prakharkumarindiranagar.kvg@gmail.com"
     ],
     teamsWebhook: "BACKEND_WEBHOOK"
@@ -22,7 +21,7 @@ export default {
       "admin-ui"
     ],
     leads: [
-      "frontendlead@company.com",
+      "prakhar@nagarro.com",
       "prakharkumarindiranagar.kvg@gmail.com"
     ],
     teamsWebhook: "FRONTEND_WEBHOOK"
