@@ -1,13 +1,13 @@
 export async function sendTeamsNotification(pr) {
 
-    let header = "🚀 New Pull Request";
+    let header = `🚀 New Pull Request (#${pr.number})`;
 
     if (pr.action === "closed") {
 
         if (pr.merged) {
-            header = "🟢 Pull Request Merged";
+            header = `🟢 Pull Request Merged (#${pr.number})`;
         } else {
-            header = "🔴 Pull Request Closed Without Merge";
+            header = `🔴 Pull Request Closed Without Merge (#${pr.number})`;
         }
 
     }
