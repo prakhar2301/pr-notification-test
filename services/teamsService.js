@@ -1,13 +1,13 @@
 export async function sendTeamsNotification(pr) {
 
-    let header = "🚀 New Pull Request";
+    let header = `🚀 New Pull Request (#${pr.number})`;
 
     if (pr.action === "closed") {
 
         if (pr.merged) {
-            header = "🟢 Pull Request Merged";
+            header = `🟢 Pull Request Merged (#${pr.number})`;
         } else {
-            header = "🔴 Pull Request Closed Without Merge";
+            header = `🔴 Pull Request Closed Without Merge (#${pr.number})`;
         }
 
     }
@@ -60,10 +60,15 @@ export async function sendTeamsNotification(pr) {
                                     value: pr.target
                                 },
 
-                                {
-                                    title: "Opened",
-                                    value: pr.createdAt
-                                },
+                                ...(pr.action === "opened"
+    ? [{
+        title: "Opened",
+        value: pr.createdAt
+    }]
+    : [{
+        title: pr.merged ? "Merged" : "Closed",
+        value: pr.closedAt
+    }]),
 
                                 {
                                     title: "PR URL",
@@ -81,10 +86,12 @@ export async function sendTeamsNotification(pr) {
                         },
 
                         {
-                            type: "TextBlock",
-                            text: pr.description,
-                            wrap: true
-                        }
+    type: "TextBlock",
+    text: pr.description.length > 60
+        ? pr.description.substring(0, 60) + "... (See PR for full description)"
+        : pr.description,
+    wrap: true
+}
 
                     ],
 
