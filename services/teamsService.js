@@ -60,10 +60,15 @@ export async function sendTeamsNotification(pr) {
                                     value: pr.target
                                 },
 
-                                {
-                                    title: "Opened",
-                                    value: pr.createdAt
-                                },
+                                ...(pr.action === "opened"
+    ? [{
+        title: "Opened",
+        value: pr.createdAt
+    }]
+    : [{
+        title: pr.merged ? "Merged" : "Closed",
+        value: pr.closedAt
+    }]),
 
                                 {
                                     title: "PR URL",
