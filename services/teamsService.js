@@ -11,42 +11,70 @@ export async function sendTeamsNotification(pr) {
                     version: "1.5",
 
                     body: [
-                        {
-                            type: "TextBlock",
-                            text: "🚀 New Pull Request",
-                            size: "Large",
-                            weight: "Bolder"
-                        },
-                        {
-                            type: "FactSet",
-                            facts: [
-                                {
-                                    title: "Repository",
-                                    value: pr.repository
-                                },
-                                {
-                                    title: "Author",
-                                    value: pr.author
-                                },
-                                {
-                                    title: "Title",
-                                    value: pr.title
-                                },
-                                {
-                                    title: "Source",
-                                    value: pr.source
-                                },
-                                {
-                                    title: "Target",
-                                    value: pr.target
-                                },
-                                {
-                                    title: "PR URL",
-                                    value: pr.url
-                                }
-                            ]
-                        }
-                    ],
+
+    {
+        type: "TextBlock",
+        text: "🚀 New Pull Request",
+        size: "Large",
+        weight: "Bolder"
+    },
+
+    {
+        type: "FactSet",
+        facts: [
+
+            {
+                title: "Repository",
+                value: pr.repository
+            },
+
+            {
+                title: "Author",
+                value: pr.author
+            },
+
+            {
+                title: "Title",
+                value: pr.title
+            },
+
+            {
+                title: "Source",
+                value: pr.source
+            },
+
+            {
+                title: "Target",
+                value: pr.target
+            },
+
+            {
+                title: "Opened",
+                value: pr.createdAt
+            },
+
+            {
+                title: "PR URL",
+                value: pr.url
+            }
+
+        ]
+    },
+
+    {
+        type: "TextBlock",
+        text: "Description",
+        weight: "Bolder",
+        spacing: "Medium"
+    },
+
+    {
+        type: "TextBlock",
+        text: pr.description,
+        wrap: true
+    }
+
+],
 
                     actions: [
                         {
