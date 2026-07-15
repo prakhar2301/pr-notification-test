@@ -1,6 +1,6 @@
 export async function sendTeamsNotification(pr) {
 
-    const card = {
+    const payload = {
         type: "message",
         attachments: [
             {
@@ -11,70 +11,49 @@ export async function sendTeamsNotification(pr) {
                     version: "1.5",
 
                     body: [
-
                         {
                             type: "TextBlock",
                             text: "🚀 New Pull Request",
                             size: "Large",
                             weight: "Bolder"
                         },
-
                         {
                             type: "FactSet",
                             facts: [
-
                                 {
                                     title: "Repository",
                                     value: pr.repository
                                 },
-
                                 {
                                     title: "Author",
                                     value: pr.author
                                 },
-
                                 {
                                     title: "Title",
                                     value: pr.title
                                 },
-
                                 {
-                                    title: "Source Branch",
+                                    title: "Source",
                                     value: pr.source
                                 },
-
                                 {
-                                    title: "Target Branch",
+                                    title: "Target",
                                     value: pr.target
+                                },
+                                {
+                                    title: "PR URL",
+                                    value: pr.url
                                 }
-
                             ]
-                        },
-
-                        {
-                            type: "TextBlock",
-                            text: "🔗 Pull Request",
-                            weight: "Bolder",
-                            spacing: "Medium"
-                        },
-
-                        {
-                            type: "TextBlock",
-                            text: `[View Pull Request](${pr.url})`,
-                            wrap: true,
-                            color: "Accent"
                         }
-
                     ],
 
                     actions: [
-
                         {
                             type: "Action.OpenUrl",
                             title: "🚀 Open Pull Request",
                             url: pr.url
                         }
-
                     ]
                 }
             }
@@ -86,14 +65,10 @@ export async function sendTeamsNotification(pr) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(card)
+        body: JSON.stringify(payload)
     });
 
-    const responseText = await response.text();
-
-    console.log("Teams Response:", responseText);
-
     if (!response.ok) {
-        throw new Error(responseText);
+        throw new Error(await response.text());
     }
 }
