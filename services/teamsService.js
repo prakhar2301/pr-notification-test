@@ -1,5 +1,17 @@
 export async function sendTeamsNotification(pr) {
 
+    let header = "🚀 New Pull Request";
+
+    if (pr.action === "closed") {
+
+        if (pr.merged) {
+            header = "🟢 Pull Request Merged";
+        } else {
+            header = "🔴 Pull Request Closed Without Merge";
+        }
+
+    }
+
     const payload = {
         type: "message",
         attachments: [
@@ -12,69 +24,69 @@ export async function sendTeamsNotification(pr) {
 
                     body: [
 
-    {
-        type: "TextBlock",
-        text: "🚀 New Pull Request",
-        size: "Large",
-        weight: "Bolder"
-    },
+                        {
+                            type: "TextBlock",
+                            text: header,
+                            size: "Large",
+                            weight: "Bolder"
+                        },
 
-    {
-        type: "FactSet",
-        facts: [
+                        {
+                            type: "FactSet",
+                            facts: [
 
-            {
-                title: "Repository",
-                value: pr.repository
-            },
+                                {
+                                    title: "Repository",
+                                    value: pr.repository
+                                },
 
-            {
-                title: "Author",
-                value: pr.author
-            },
+                                {
+                                    title: "Author",
+                                    value: pr.author
+                                },
 
-            {
-                title: "Title",
-                value: pr.title
-            },
+                                {
+                                    title: "Title",
+                                    value: pr.title
+                                },
 
-            {
-                title: "Source",
-                value: pr.source
-            },
+                                {
+                                    title: "Source",
+                                    value: pr.source
+                                },
 
-            {
-                title: "Target",
-                value: pr.target
-            },
+                                {
+                                    title: "Target",
+                                    value: pr.target
+                                },
 
-            {
-                title: "Opened",
-                value: pr.createdAt
-            },
+                                {
+                                    title: "Opened",
+                                    value: pr.createdAt
+                                },
 
-            {
-                title: "PR URL",
-                value: pr.url
-            }
+                                {
+                                    title: "PR URL",
+                                    value: pr.url
+                                }
 
-        ]
-    },
+                            ]
+                        },
 
-    {
-        type: "TextBlock",
-        text: "Description",
-        weight: "Bolder",
-        spacing: "Medium"
-    },
+                        {
+                            type: "TextBlock",
+                            text: "Description",
+                            weight: "Bolder",
+                            spacing: "Medium"
+                        },
 
-    {
-        type: "TextBlock",
-        text: pr.description,
-        wrap: true
-    }
+                        {
+                            type: "TextBlock",
+                            text: pr.description,
+                            wrap: true
+                        }
 
-],
+                    ],
 
                     actions: [
                         {
@@ -99,4 +111,5 @@ export async function sendTeamsNotification(pr) {
     if (!response.ok) {
         throw new Error(await response.text());
     }
+
 }
