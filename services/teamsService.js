@@ -39,16 +39,30 @@ export async function sendTeamsNotification(pr) {
                                 },
 
                                 {
-                                    title: "Source",
+                                    title: "Source Branch",
                                     value: pr.source
                                 },
 
                                 {
-                                    title: "Target",
+                                    title: "Target Branch",
                                     value: pr.target
                                 }
 
                             ]
+                        },
+
+                        {
+                            type: "TextBlock",
+                            text: "🔗 Pull Request",
+                            weight: "Bolder",
+                            spacing: "Medium"
+                        },
+
+                        {
+                            type: "TextBlock",
+                            text: `[View Pull Request](${pr.url})`,
+                            wrap: true,
+                            color: "Accent"
                         }
 
                     ],
@@ -57,7 +71,7 @@ export async function sendTeamsNotification(pr) {
 
                         {
                             type: "Action.OpenUrl",
-                            title: "Open Pull Request",
+                            title: "🚀 Open Pull Request",
                             url: pr.url
                         }
 
@@ -68,17 +82,18 @@ export async function sendTeamsNotification(pr) {
     };
 
     const response = await fetch(process.env.TEST_TEAMS_WEBHOOK, {
-
         method: "POST",
-
         headers: {
             "Content-Type": "application/json"
         },
-
         body: JSON.stringify(card)
-
     });
 
-    console.log(await response.text());
+    const responseText = await response.text();
 
+    console.log("Teams Response:", responseText);
+
+    if (!response.ok) {
+        throw new Error(responseText);
+    }
 }
