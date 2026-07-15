@@ -1,5 +1,6 @@
 import { resolveRepository } from "../utils/repositoryResolver.js";
 import { sendTeamsNotification } from "../services/teamsService.js";
+import { timeAgo } from "../utils/timeFormatter.js";
 
 export default async function handler(req, res) {
 
@@ -50,10 +51,7 @@ export default async function handler(req, res) {
 
     number: event.pull_request.number,
 
-    createdAt: new Date(event.pull_request.created_at).toLocaleString("en-IN", {
-        dateStyle: "medium",
-        timeStyle: "short"
-    })
+    createdAt: timeAgo(event.pull_request.created_at)
 
 };
 
