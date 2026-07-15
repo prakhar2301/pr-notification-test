@@ -86,10 +86,12 @@ export async function sendTeamsNotification(pr) {
                         },
 
                         {
-                            type: "TextBlock",
-                            text: pr.description,
-                            wrap: true
-                        }
+    type: "TextBlock",
+    text: pr.description.length > 60
+        ? pr.description.substring(0, 60) + "... (See PR for full description)"
+        : pr.description,
+    wrap: true
+}
 
                     ],
 
