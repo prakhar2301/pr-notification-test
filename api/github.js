@@ -57,10 +57,18 @@ export default async function handler(req, res) {
         merged: event.pull_request.merged,
 
         createdAt: `${timeAgo(event.pull_request.created_at)} (${new Date(event.pull_request.created_at).toLocaleString("en-IN", {
-            dateStyle: "medium",
-            timeStyle: "short",
-            timeZone: "Asia/Kolkata"
-        })})`
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Kolkata"
+})})`,
+
+closedAt: event.pull_request.closed_at
+    ? `${timeAgo(event.pull_request.closed_at)} (${new Date(event.pull_request.closed_at).toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Asia/Kolkata"
+    })})`
+    : null
 
     };
 
