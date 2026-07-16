@@ -1,5 +1,6 @@
 import { resolveRepository } from "../utils/repositoryResolver.js";
 import { sendTeamsNotification } from "../services/teamsService.js";
+import { timeAgo } from "../utils/timeFormatter.js";
 
 export default async function handler(req, res) {
 
@@ -11,9 +12,10 @@ export default async function handler(req, res) {
 
     const event = req.body;
 
-    if (event.action !== "opened") {
+    // Handle only the PR events we care about
+    if (!["opened", "closed"].includes(event.action)) {
         return res.status(200).json({
-            message: "Ignored"
+            message: `Ignoring action: ${event.action}`
         });
     }
 
@@ -36,7 +38,11 @@ export default async function handler(req, res) {
 
         leads: config.leads,
 
+        number: event.pull_request.number,
+
         title: event.pull_request.title,
+
+        description: event.pull_request.body || "No description provided.",
 
         author: event.pull_request.user.login,
 
@@ -46,7 +52,23 @@ export default async function handler(req, res) {
 
         url: event.pull_request.html_url,
 
-        number: event.pull_request.number
+        action: event.action,
+
+        merged: event.pull_request.merged,
+
+        createdAt: `${timeAgo(event.pull_request.created_at)} (${new Date(event.pull_request.created_at).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Kolkata"
+})})`,
+
+closedAt: event.pull_request.closed_at
+    ? `${timeAgo(event.pull_request.closed_at)} (${new Date(event.pull_request.closed_at).toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Asia/Kolkata"
+    })})`
+    : null
 
     };
 
@@ -72,7 +94,7 @@ export default async function handler(req, res) {
 
         success: true,
 
-        message: "Teams notification sent successfully",
+        message: `PR ${event.action} notification sent successfully`,
 
         pullRequest: prDetails
 

@@ -1,5 +1,17 @@
 export async function sendTeamsNotification(pr) {
 
+    let header = `🚀 New Pull Request (#${pr.number})`;
+
+    if (pr.action === "closed") {
+
+        if (pr.merged) {
+            header = `🟢 Pull Request Merged (#${pr.number})`;
+        } else {
+            header = `🔴 Pull Request Closed Without Merge (#${pr.number})`;
+        }
+
+    }
+
     const payload = {
         type: "message",
         attachments: [
@@ -11,41 +23,76 @@ export async function sendTeamsNotification(pr) {
                     version: "1.5",
 
                     body: [
+
                         {
                             type: "TextBlock",
-                            text: "🚀 New Pull Request",
+                            text: header,
                             size: "Large",
                             weight: "Bolder"
                         },
+
                         {
                             type: "FactSet",
                             facts: [
+
                                 {
                                     title: "Repository",
                                     value: pr.repository
                                 },
+
                                 {
                                     title: "Author",
                                     value: pr.author
                                 },
+
                                 {
                                     title: "Title",
                                     value: pr.title
                                 },
+
                                 {
                                     title: "Source",
                                     value: pr.source
                                 },
+
                                 {
                                     title: "Target",
                                     value: pr.target
                                 },
+
+                                ...(pr.action === "opened"
+    ? [{
+        title: "Opened",
+        value: pr.createdAt
+    }]
+    : [{
+        title: pr.merged ? "Merged" : "Closed",
+        value: pr.closedAt
+    }]),
+
                                 {
                                     title: "PR URL",
                                     value: pr.url
                                 }
+
                             ]
-                        }
+                        },
+
+                        {
+                            type: "TextBlock",
+                            text: "Description",
+                            weight: "Bolder",
+                            spacing: "Medium"
+                        },
+
+                        {
+    type: "TextBlock",
+    text: pr.description.length > 60
+        ? pr.description.substring(0, 60) + "... (See PR for full description)"
+        : pr.description,
+    wrap: true
+}
+
                     ],
 
                     actions: [
@@ -71,4 +118,5 @@ export async function sendTeamsNotification(pr) {
     if (!response.ok) {
         throw new Error(await response.text());
     }
+
 }
